@@ -1,41 +1,53 @@
-import React,{ Component } from 'react';
+import React, { useContext, useState } from "react";
 
-class ExampleComponent extends Component{
-  
-  constructor(props) {
-    super(props)
-    console.log('Constructor Çalıştı')
-    this.state = {
-      message: 'Merhaba Dünya'
-    }
+const ThemeContext = React.createContext();
+
+function App() {
+  const [theme, setTheme] = useState({
+    backgroundColor: "lightblue",
+    color: "white"
+  });
+
+  const toggleTheme = () => {
+    setTheme((theme) => ({
+      backgroundColor: theme.backgroundColor === "lightblue" ? "white" : "lightblue",
+      color: theme.color === "white" ? "black" : "white"
+    }));
+  };
+
+  function Main() {
+    const theme = useContext(ThemeContext);
+    return (
+      <main style={theme}>
+        <p>This is the main context</p>
+      </main>
+    );
   }
 
-  componentDidMount() {
-    console.log('ComponentDidMount çalıştı')
+  function Header() {
+    const theme = useContext(ThemeContext);
+    return (
+      <header style={theme}>
+        <h1>Header</h1>
+      </header>
+    );
   }
 
-
-  componentDidUpdate() {
-    console.log('ComponentDidUpdate çalıştı')
+  function Button({ onClick }) {
+    return <button onClick={onClick}>Change Theme</button>;
   }
 
-  componentWillUnmount() {
-    console.log('ComponentWillUnmount çalıştı')
-  }
-
-  render() {
-    console.log('çalıştı')
-    return(
-
-      <div>
-        <h1>{this.state.message}</h1>
-        <button onClick={() => this.setState({message: 'Güle Güle Dünya'})}>Güncelle</button>
-      </div>
-
-    )
-  }
+  return (
+    <div>
+      <ThemeContext.Provider value={theme}>
+        <div>
+          <Header />
+          <Main />
+          <Button onClick={toggleTheme} />
+        </div>
+      </ThemeContext.Provider>
+    </div>
+  );
 }
 
-
-
-export default ExampleComponent;
+export default App;
